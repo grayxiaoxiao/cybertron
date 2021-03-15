@@ -1,7 +1,7 @@
 package cube
 
 import (
-	"cybertron/cmd/cube/transform"
+	"github.com/grayxiaoxiao/cybertron/cmd/cube/transform"
 
 	"github.com/spf13/cobra"
 )

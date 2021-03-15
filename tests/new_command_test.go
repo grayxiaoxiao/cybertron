@@ -1,7 +1,7 @@
 package test
 
 import (
-	"cybertron/cmd/cube/transform"
+	"github.com/grayxiaoxiao/cybertron/cmd/cube/transform"
 	"testing"
 )
 

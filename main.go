@@ -1,8 +1,9 @@
 package main
 
 import (
-	"cybertron/cmd/cube"
 	"log"
+
+	"github.com/grayxiaoxiao/cybertron/cmd/cube"
 
 	"github.com/spf13/cobra"
 )

@@ -2,11 +2,12 @@ package transform
 
 import (
 	"bytes"
-	"cybertron/cmd/cube/tmpl"
 	"fmt"
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/grayxiaoxiao/cybertron/cmd/cube/tmpl"
 
 	"github.com/spf13/cobra"
 )
