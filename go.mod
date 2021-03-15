@@ -1,4 +1,4 @@
-module cybertron
+module github.com/grayxiaoxiao/cybertron
 
 go 1.16
 
