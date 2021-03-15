@@ -20,22 +20,22 @@ var CmdNew = &cobra.Command{
 
 func run(cmd *cobra.Command, args []string) {
     if len(args) == 0 {
-        fmt.Fprintf(os.Stderr, "\033[31mError: Struct name is required.\033[m Example: cybertron new customer\n")
+        logsPrint("Error", "struct name is required.\033[m Example: cybertron new customer")
         return
     }
     currentDir, err := os.Getwd()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mGet current directory failed with error '%s'.\033[m\n", err.Error())
+        logsPrint("Error", "get current directory failed with error " + err.Error())
         panic(err)
     }
-    fmt.Fprintf(os.Stdout, "\033[32mWorking in directory is '%s'\033[m\n", currentDir)
+    logsPrint("Info", "work in directory " + currentDir)
 
     interfaceDir, fullDir, packageName, cybertronName := autobots(args[0], currentDir)
-    fmt.Fprintf(os.Stdout, "\033[32mCreating struct '%s' of package '%s' in directory '%s'..........\033[m\n", cybertronName, packageName, fullDir)
+    logsPrint("Info", "create struct " + cybertronName + " of package " + packageName + " in directory " + fullDir)
     fields := getStructFields(args)
     writeStructFile(fullDir, packageName, cybertronName, fields)
     writeInterfaceFile(interfaceDir)
-    fmt.Fprintf(os.Stdout, "\033[32mCreate struct success...........\033[m\n")
+    logsPrint("Info", "create struct" + cybertronName + " success........")
 }
 
 func writeStructFile(fullDir, packageName, cybertronName string, fields []tmpl.StructField) error {
@@ -47,12 +47,12 @@ func writeStructFile(fullDir, packageName, cybertronName string, fields []tmpl.S
     fileName  := tableName + ".go"
     file, err := os.Create(fullDir + "/" + fileName)
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mCreating struct file failed with error '%s'\033[m\n", err.Error())
+        logsPrint("Error", "create struct file failed with error " + err.Error())
     }
     defer file.Close()
     tmplStr, err := template.New("struct").Parse(tmpl.StructTMPL)
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mParse struct template file failed with error '%s'\033[m\n", err.Error())
+        logsPrint("Error", "parse struct template file failed with error " + err.Error())
     }
 
     structMap  := map[string]interface{}{
@@ -64,11 +64,11 @@ func writeStructFile(fullDir, packageName, cybertronName string, fields []tmpl.S
     structFile := new(bytes.Buffer)
     err = tmplStr.Execute(structFile, structMap)
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mExecute struct template file failed with error '%s'\033[m\n", err.Error())
+        logsPrint("Error", "execute struct template file failed with error " + err.Error())
     }
     _, err = file.WriteString(strings.Replace(structFile.String(), "\n\n", "\n", -1))
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mWrite struct file failed with error '%s'\033[m\n", err.Error())
+        logsPrint("Error", "write struct file failed with error " + err.Error())
     }
     return err
 }
@@ -80,11 +80,11 @@ func getStructFields(args []string) []tmpl.StructField {
     } else {
         pgs := args[1:]
         fields := make([]tmpl.StructField, len(pgs))
-        fmt.Fprintf(os.Stdout, "\033[32mCreating struct fields ...........\033[m\n")
+        logsPrint("Info", "creating struct fields................")
         for _, item := range pgs {
             sps := strings.Split(item, ":")
             if len(sps) != 2 {
-                fmt.Fprintf(os.Stdout, "\033[33mWarning: '%s' is not an effective parameter for struct field\033[m\n", item)
+                logsPrint("Warning", item + " is not an effective parameter")
                 continue
             }
             field := tmpl.StructField{
@@ -110,12 +110,12 @@ func writeInterfaceFile(interfaceDir string) error {
     }
     file, err := os.Create(interfaceDir + "/interfaces/cybertron.go")
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mCreating interface file failed with error '%s'\033[m\n", err.Error())
+        logsPrint("Error", "create interface file failed with error " + err.Error())
     }
     defer file.Close()
     _, err = file.WriteString(tmpl.InterfaceTMPL)
     if err != nil {
-        fmt.Fprintf(os.Stderr, "\033[31mWrite interface file failed with error '%s'\033[m\n", err.Error())
+        logsPrint("Error", "write interface file failed with error " + err.Error())
     }
     return err
 }
@@ -127,5 +127,18 @@ func autobots(pms string, currentDir string) (interfaceDir, fullDir, pkgName, cb
         return currentDir + "/models", currentDir + "/models", "models", strings.Title(pgs[0])
     } else {
         return currentDir + "/" + pgs[0], currentDir + "/" + strings.Join(pgs[0:num-1], "/"), pgs[num - 2], strings.Title(pgs[num - 1])
+    }
+}
+
+func logsPrint(mode, log string) {
+    switch mode {
+    case "Error":
+        fmt.Fprintf(os.Stdout, "\033[31mError: %s\033[m\n", log)
+    case "Info":
+        fmt.Fprintf(os.Stdout, "\033[32mInfo: %s\033[m\n", log)
+    case "Warning":
+        fmt.Fprintf(os.Stdout, "\033[33mWarning: %s\033[m\n", log)
+    default:
+        fmt.Fprintf(os.Stdout, log)
     }
 }
