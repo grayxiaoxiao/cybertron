@@ -4,7 +4,7 @@
 
 #### 1. 安装/install
 ```
-go get -u github.com/grayxiaoxiao/cybertron
+go get -u github.com/grayxiaoxiao/cybertron@v1.1.1
 ```
 #### 2. 使用/usage
 ##### 2.1 创建Customer/Create Customer

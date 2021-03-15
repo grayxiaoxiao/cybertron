@@ -9,7 +9,7 @@ import (
 )
 
 var (
-    version string = "v.1.0.0"
+    version string = "v.1.1.1"
     rootCmd = &cobra.Command{
         Use:   "cybertron",
         Short: "cybertron: generate go struct from tmpl file/通过tmpl文件构建struct",
