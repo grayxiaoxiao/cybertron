@@ -46,6 +46,11 @@ func writeStructFile(fullDir, packageName, cybertronName string, fields []tmpl.S
     }
     tableName := strings.ToLower(cybertronName)
     fileName  := tableName + ".go"
+    _, err = os.Stat(fullDir + "/" + fileName)
+    if err == nil {
+        logsPrint("Warning", "struct file " + fileName + " is exist!")
+        return nil
+    }
     file, err := os.Create(fullDir + "/" + fileName)
     if err != nil {
         logsPrint("Error", "create struct file failed with error " + err.Error())
@@ -108,6 +113,11 @@ func writeInterfaceFile(interfaceDir string) error {
     _, err := os.Stat(interfaceDir + "/interfaces")
     if os.IsNotExist(err) {
         os.MkdirAll(interfaceDir + "/interfaces", os.ModePerm)
+    }
+    _, err = os.Stat(interfaceDir + "/interfaces/cybertron.go")
+    if err == nil {
+        logsPrint("Warning", "interface file cybertron.go is exist!")
+        return nil
     }
     file, err := os.Create(interfaceDir + "/interfaces/cybertron.go")
     if err != nil {
